@@ -1,4 +1,4 @@
-'use server';
+"use server";
 import { auth } from "@clerk/nextjs/server";
 import { CreateSupaBaseClient } from "../supabase";
 
@@ -21,4 +21,39 @@ export const CreateCompanion = async (formData: CreateCompanion) => {
   }
 
   return data[0];
+};
+
+export const GetAllCompanions = async ({
+  limit = 10,
+  page = 1,
+  subject,
+  topic,
+}: GetAllCompanions) => {
+  // Await the function call to get the Supabase client
+  const supabase = await CreateSupaBaseClient();
+
+  let Query = supabase.from("companions").select();
+
+  if (subject && topic) {
+    Query = Query.ilike("subject", `%${subject}%`).or(
+      `topic.ilike.%${topic}%,name.ilike.%${topic}%`
+    );
+  } else if (subject) {
+    Query = Query.ilike("subject", `%${subject}%`);
+  } else if (topic) {
+    Query = Query.or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`);
+  }
+
+  Query = Query.range((page - 1) * limit, page * limit - 1).order(
+    "created_at",
+    { ascending: false }
+  );
+
+  const { data: companions, error } = await Query;
+
+  if (error || !companions) {
+    throw new Error(error?.message || "Failed to fetch companions");
+  }
+
+  return companions;
 };

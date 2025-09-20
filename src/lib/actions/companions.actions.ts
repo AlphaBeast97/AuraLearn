@@ -68,9 +68,9 @@ export const GetCompanionById = async (id: string) => {
     .eq("id", id)
     .single();
 
-  // if (error || !companion) {
-  //   throw new Error(error?.message || "Failed to fetch companion");
-  // }
+  if (error || !companion) {
+    throw new Error(error?.message || "Failed to fetch companion");
+  }
 
   return companion;
 };

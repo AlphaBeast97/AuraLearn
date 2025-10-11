@@ -13,13 +13,21 @@ enum CallStatus {
     FINISHED = 'FINISHED',
 }
 
-const CompanionComponent = ({ companionId, subject, name, topic, style, voice, userName, userImage }: CompanionComponentProps) => {
+const CompanionComponent = ({ companionId, subject, name, topic, style, voice, userName, userImage, duration }: CompanionComponentProps) => {
 
     const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
     const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
     const [isMuted, setIsMuted] = useState<boolean>(false);
+    const [permissionError, setPermissionError] = useState<string | null>(null);
+    const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
+    const [transcriptMessages, setTranscriptMessages] = useState<Array<{
+        role: 'user' | 'assistant';
+        message: string;
+        timestamp: Date;
+    }>>([]);
 
     const lottieRef = useRef<LottieRefCurrentProps>(null);
+    const transcriptRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (lottieRef) {
@@ -31,14 +39,85 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
         }
     }, [isSpeaking, lottieRef])
 
+    // Keep scroll at top to show latest messages
+    useEffect(() => {
+        if (transcriptRef.current) {
+            transcriptRef.current.scrollTop = 0;
+        }
+    }, [transcriptMessages])
+
     useEffect(() => {
         // set up event listeners here
-        const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
+        const onCallStart = () => {
+            setCallStatus(CallStatus.ACTIVE);
+            setPermissionError(null);
+            setTranscriptMessages([]); // Clear previous messages
+        };
         const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
-        const onMessage = () => { }
+        const onMessage = (message: unknown) => {
+            // console.log('📝 Vapi Message:', message);
+
+            // Handle transcript messages - only process FINAL transcripts to avoid partial messages
+            const messageObj = message as {
+                type?: string;
+                role?: string;
+                transcript?: string;
+                transcriptType?: string;
+            };
+
+            if (messageObj.type === 'transcript' &&
+                messageObj.transcript &&
+                messageObj.transcriptType === 'final') {
+
+                const transcriptMessage = {
+                    role: messageObj.role as 'user' | 'assistant',
+                    message: messageObj.transcript,
+                    timestamp: new Date()
+                };
+
+                setTranscriptMessages(prev => [...prev, transcriptMessage]);
+
+                // Check if AI is signaling to end the session
+                if (messageObj.role === 'assistant' && messageObj.transcript.includes('END_SESSION')) {
+                    console.log('🔚 AI signaled session end, closing call...');
+                    setTimeout(() => {
+                        vapi.stop();
+                        setCallStatus(CallStatus.FINISHED);
+                    }, 3000); // Give 3 seconds for the user to hear the conclusion
+                }
+            }
+        };
         const onSpeechStart = () => setIsSpeaking(true);
         const onSpeechEnd = () => setIsSpeaking(false);
-        const onError = (error: Error) => console.error('Vapi SDK Error: ', error);
+        const onError = (error: unknown) => {
+            console.error('🚨 Vapi SDK Error Details:', error);
+            console.error('🔍 Error Type:', typeof error);
+            console.error('🔍 Error Keys:', error ? Object.keys(error as object) : 'none');
+
+            // Handle specific error types
+            const errorObj = error as {
+                error?: { type?: string };
+                errorMsg?: string;
+                message?: string;
+                action?: string;
+                callClientId?: string;
+            };
+
+            if (errorObj?.error?.type === 'ejected' || errorObj?.errorMsg?.includes('Meeting has ended')) {
+                console.error('❌ Call ejected - possible causes:');
+                console.error('   - Invalid or expired API token');
+                console.error('   - Assistant configuration issue');
+                console.error('   - Vapi service limitation reached');
+                setCallStatus(CallStatus.FINISHED);
+                setPermissionError('Call was ended by the service. This may be due to an invalid API token or configuration issue.');
+            } else if (errorObj?.message?.includes('NotAllowedError') || errorObj?.message?.includes('Permission denied')) {
+                setCallStatus(CallStatus.INACTIVE);
+                setPermissionError('Microphone permission denied. Please allow microphone access and try again.');
+            } else {
+                setCallStatus(CallStatus.INACTIVE);
+                setPermissionError('An error occurred. Please check the console for details and try again.');
+            }
+        };
 
         vapi.on('call-start', onCallStart);
         vapi.on('call-end', onCallEnd);
@@ -58,6 +137,17 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
         };
     }, []);
 
+    const requestMicrophonePermission = async (): Promise<boolean> => {
+        try {
+            await navigator.mediaDevices.getUserMedia({ audio: true });
+            return true;
+        } catch (error) {
+            console.error('Microphone permission denied:', error);
+            setPermissionError('Microphone access is required for voice calls. Please allow microphone access and try again.');
+            return false;
+        }
+    };
+
     const toggleMicrophone = () => {
         const isMuted = vapi.isMuted();
         vapi.setMuted(!isMuted);
@@ -65,21 +155,40 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
     }
 
     const handleCall = async () => {
-        setCallStatus(CallStatus.CONNECTING);
-        const assistantOverrides = {
-            Variable: {
-                subject, topic, style
-            },
-            clientMessages: ['transcript'],
-            serverMessages: [],
+        // Mark that user has interacted with the component
+        setHasUserInteracted(true);
+        setPermissionError(null);
+
+        // Request microphone permission first
+        const hasPermission = await requestMicrophonePermission();
+        if (!hasPermission) {
+            return;
         }
-        // @ts-expect-error forgive me ALLAH
-        vapi.start(configureAssistant(voice, style), assistantOverrides);
+
+        setCallStatus(CallStatus.CONNECTING);
+
+        try {
+            const companionData = { name, subject, topic, duration };
+            const assistant = configureAssistant(voice, style, companionData);
+
+            // Use the simplified vapi.start method
+            vapi.start(assistant);
+        } catch (error) {
+            console.error('Failed to start call:', error);
+            setCallStatus(CallStatus.INACTIVE);
+            setPermissionError('Failed to start the call. Please try again.');
+        }
     }
 
     const handleDisconnect = async () => {
         setCallStatus(CallStatus.FINISHED);
+        setPermissionError(null);
         vapi.stop();
+    }
+
+    const handleRetry = async () => {
+        setPermissionError(null);
+        await handleCall();
     }
 
     return (
@@ -152,6 +261,19 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
                             {isMuted ? 'Turn on Microphone' : 'Turn off Microphone'}
                         </p>
                     </button>
+                    {permissionError && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-sm mb-2">
+                            <p>{permissionError}</p>
+                            {callStatus === CallStatus.FINISHED && (
+                                <button
+                                    onClick={handleRetry}
+                                    className="mt-2 text-sm underline hover:no-underline"
+                                >
+                                    Try Again
+                                </button>
+                            )}
+                        </div>
+                    )}
                     <button className={
                         cn(
                             'rounded-lg py-2 cursor-pointer transition-colors w-full text-white',
@@ -164,6 +286,7 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
                                 ? handleDisconnect
                                 : handleCall
                         }
+                        disabled={callStatus === CallStatus.CONNECTING}
                     >
                         {callStatus === CallStatus.ACTIVE
                             ? 'End Session'
@@ -174,12 +297,28 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
             </section>
 
             <section className='transcript'>
-                <div className="transcript-msg no-scrollbar">
-                    MESSAGE
+                <div ref={transcriptRef} className="transcript-msg no-scrollbar">
+                    {transcriptMessages.length === 0 ? (
+                        <div className="text-center text-gray-500 mt-8">
+                            <p>Conversation transcript will appear here...</p>
+                        </div>
+                    ) : (
+                        transcriptMessages.slice().reverse().map((msg, index) => (
+                            <div key={transcriptMessages.length - 1 - index} className={`mb-4 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                                <div className={`inline-block max-w-[80%] p-3 rounded-lg ${msg.role === 'user'
+                                    ? 'bg-primary text-white rounded-br-none'
+                                    : 'bg-gray-100 text-gray-800 rounded-bl-none'
+                                    }`}>
+                                    <p className="text-sm">{msg.message}</p>
+                                    <p className="text-xs opacity-70 mt-1">
+                                        {msg.timestamp.toLocaleTimeString()}
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
-                <div
-                    className='transcript-fade'
-                />
+                <div className='transcript-fade' />
             </section>
         </section >
     )

@@ -28,6 +28,7 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
 
     const lottieRef = useRef<LottieRefCurrentProps>(null);
     const transcriptRef = useRef<HTMLDivElement>(null);
+    const sessionTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (lottieRef) {
@@ -52,8 +53,22 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
             setCallStatus(CallStatus.ACTIVE);
             setPermissionError(null);
             setTranscriptMessages([]); // Clear previous messages
+
+            // Start session timer to automatically end call after duration
+            sessionTimerRef.current = setTimeout(() => {
+                console.log(`⏰ Session duration of ${duration} minutes reached, ending call...`);
+                vapi.stop();
+                setCallStatus(CallStatus.FINISHED);
+            }, duration * 60 * 1000); // Convert minutes to milliseconds
         };
-        const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+        const onCallEnd = () => {
+            setCallStatus(CallStatus.FINISHED);
+            // Clear the session timer if call ends early
+            if (sessionTimerRef.current) {
+                clearTimeout(sessionTimerRef.current);
+                sessionTimerRef.current = null;
+            }
+        };
         const onMessage = (message: unknown) => {
             // console.log('📝 Vapi Message:', message);
 
@@ -77,9 +92,21 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
 
                 setTranscriptMessages(prev => [...prev, transcriptMessage]);
 
-                // Check if AI is signaling to end the session
-                if (messageObj.role === 'assistant' && messageObj.transcript.includes('END_SESSION')) {
+                // Check if AI is signaling to end the session (multiple keyword variations)
+                const transcript = messageObj.transcript.toUpperCase();
+                const endKeywords = ['END_SESSION', 'END SESSION', 'CONCLUDE SESSION', 'SESSION COMPLETE', 'End session'];
+                const shouldEndSession = messageObj.role === 'assistant' &&
+                    endKeywords.some(keyword => transcript.includes(keyword));
+
+                if (shouldEndSession) {
                     console.log('🔚 AI signaled session end, closing call...');
+
+                    // Clear the duration timer since AI is ending naturally
+                    if (sessionTimerRef.current) {
+                        clearTimeout(sessionTimerRef.current);
+                        sessionTimerRef.current = null;
+                    }
+
                     setTimeout(() => {
                         vapi.stop();
                         setCallStatus(CallStatus.FINISHED);
@@ -134,8 +161,13 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
             vapi.off('speech-start', onSpeechStart);
             vapi.off('speech-end', onSpeechEnd);
             vapi.off('error', onError);
+
+            // Clean up timer on component unmount
+            if (sessionTimerRef.current) {
+                clearTimeout(sessionTimerRef.current);
+            }
         };
-    }, []);
+    }, [duration]);
 
     const requestMicrophonePermission = async (): Promise<boolean> => {
         try {
@@ -183,6 +215,13 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
     const handleDisconnect = async () => {
         setCallStatus(CallStatus.FINISHED);
         setPermissionError(null);
+
+        // Clear the session timer when manually ending
+        if (sessionTimerRef.current) {
+            clearTimeout(sessionTimerRef.current);
+            sessionTimerRef.current = null;
+        }
+
         vapi.stop();
     }
 
@@ -250,6 +289,7 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
                     <button
                         className='btn-mic'
                         onClick={toggleMicrophone}
+                        disabled={callStatus !== CallStatus.ACTIVE}
                     >
                         <Image
                             src={isMuted ? '/icons/mic-off.svg' : '/icons/mic-on.svg'}
@@ -257,7 +297,7 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
                             width={36}
                             height={36}
                         />
-                        <p className="max-sm:hidden">
+                        <p className="max-sm:hidden" >
                             {isMuted ? 'Turn on Microphone' : 'Turn off Microphone'}
                         </p>
                     </button>

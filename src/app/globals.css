@@ -224,3 +224,30 @@ body {
     scrollbar-width: none;
   }
 }
+
+/* Clerk Pricing Table Styling */
+.clerk-pricing-container .cl-rootBox {
+  font-family: inherit;
+}
+
+.clerk-pricing-container .cl-card {
+  border-radius: 2rem !important;
+  border: 1px solid rgb(229 231 235 / 0.5) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+}
+
+.clerk-pricing-container .cl-cardBox {
+  padding: 2rem !important;
+}
+
+.clerk-pricing-container .cl-button {
+  border-radius: 2rem !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.clerk-pricing-container .cl-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2) !important;
+}

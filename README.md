@@ -17,7 +17,8 @@ AuraLearn is a cutting-edge educational platform that leverages AI technology to
 - **🎙️ Voice Conversations** - Natural voice interactions powered by VAPI AI technology
 - **📚 Multi-Subject Support** - Comprehensive coverage across Mathematics, Science, Languages, History, Coding, and Economics
 - **👤 Personalized Experience** - Tailored learning paths based on individual preferences and progress
-- **🔒 Secure Authentication** - User management powered by Clerk
+- **� Subscription Management** - Tiered pricing plans with companion limits and premium features
+- **�🔒 Secure Authentication** - User management powered by Clerk
 - **📱 Responsive Design** - Beautiful, mobile-first UI built with Tailwind CSS
 
 ## 🚀 Live Demo
@@ -38,7 +39,7 @@ Visit [AuraLearn](https://aura-learn-six.vercel.app/) to experience the platform
 ### Backend & Services
 
 - **Supabase** - Database and real-time subscriptions
-- **Clerk** - Authentication and user management
+- **Clerk** - Authentication, user management, and subscription billing
 - **VAPI AI** - Voice AI conversations
 - **Sentry** - Error monitoring and performance tracking
 
@@ -55,8 +56,16 @@ Before running this project, make sure you have:
 - **Node.js** (v18 or higher)
 - **npm**, **yarn**, **pnpm**, or **bun**
 - **Supabase** account and project
-- **Clerk** account for authentication
+- **Clerk** account for authentication and billing
 - **VAPI** account for AI voice integration
+
+### Clerk Setup Requirements
+
+For the subscription system to work properly, you'll need to configure:
+
+- **Clerk Plans**: Set up pricing plans (free, pro) in your Clerk dashboard
+- **Features**: Configure feature flags like `3_companion_limit`, `10_companion_limit`
+- **Pricing Table**: Enable Clerk's billing features and pricing table component
 
 ## ⚡ Quick Start
 
@@ -84,7 +93,7 @@ Before running this project, make sure you have:
    Create a `.env.local` file in the root directory:
 
    ```env
-   # Clerk Authentication
+   # Clerk Authentication & Billing
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
    CLERK_SECRET_KEY=your_clerk_secret_key
    NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
@@ -208,6 +217,14 @@ Users can create personalized AI tutors by:
 - Session history and duration tracking
 - Subject-wise progress monitoring
 - Personalized recommendations
+
+### Subscription & Billing System
+
+- **Tiered Plans** - Free, feature-limited, and Pro plans available
+- **Companion Limits** - Different companion creation limits based on subscription tier
+- **Clerk Billing Integration** - Seamless subscription management with Clerk's PricingTable
+- **Feature-based Access** - Granular permission control based on user subscription
+- **Upgrade Prompts** - Smart UI prompts when users reach their plan limits
 
 ## 🚀 Deployment
 

@@ -70,35 +70,48 @@ const Profile = async () => {
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="flex gap-4">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-4 text-center min-w-[120px] border border-blue-200/50 hover:shadow-md transition-all duration-300">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+            {/* Quick Stats and Actions */}
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-4">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-4 text-center min-w-[120px] border border-blue-200/50 hover:shadow-md transition-all duration-300">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <p className="text-xl font-bold text-foreground mb-1">
+                    {sessionHistory.length}
+                  </p>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    Sessions
+                  </p>
                 </div>
-                <p className="text-xl font-bold text-foreground mb-1">
-                  {sessionHistory.length}
-                </p>
-                <p className="text-xs text-muted-foreground font-medium">
-                  Sessions
-                </p>
+
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-4 text-center min-w-[120px] border border-purple-200/50 hover:shadow-md transition-all duration-300">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <p className="text-xl font-bold text-foreground mb-1">
+                    {companions.length}
+                  </p>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    Companions
+                  </p>
+                </div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-4 text-center min-w-[120px] border border-purple-200/50 hover:shadow-md transition-all duration-300">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <p className="text-xl font-bold text-foreground mb-1">
-                  {companions.length}
-                </p>
-                <p className="text-xs text-muted-foreground font-medium">
-                  Companions
-                </p>
-              </div>
+              {/* Subscription Button */}
+              <Link
+                href="/subscription"
+                className="inline-flex items-center justify-center gap-2 w-fit bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-5 py-2.5 rounded-3xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+                Upgrade Plan
+              </Link>
             </div>
           </div>
         </section>

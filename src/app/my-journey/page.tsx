@@ -5,7 +5,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { recentSessions } from "@/constants"
 import { getUserCompanions, GetUserSessions } from "@/lib/actions/companions.actions"
 import { currentUser } from "@clerk/nextjs/server"
 import Image from "next/image"

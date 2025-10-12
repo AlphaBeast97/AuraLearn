@@ -164,3 +164,66 @@ export const newCompanionsPermissions = async () => {
   // console.log("count", count, "currentCount", currentCount, "limit", limit);
   return true;
 };
+
+export const ToggleBookmark = async (CompanionId: string) => {
+  const { userId } = await auth();
+  const supabase = await CreateSupaBaseClient();
+
+  // First, check if the bookmark already exists
+  const { data: existingBookmark, error: checkError } = await supabase
+    .from("companion_bookmark")
+    .select()
+    .eq("companion_id", CompanionId)
+    .eq("user_id", userId)
+    .single();
+
+  if (checkError && checkError.code !== "PGRST116") {
+    throw new Error(checkError?.message || "Failed to check bookmark");
+  }
+
+  if (existingBookmark) {
+    // Bookmark exists, remove it
+    const { error: deleteError } = await supabase
+      .from("companion_bookmark")
+      .delete()
+      .eq("companion_id", CompanionId)
+      .eq("user_id", userId);
+
+    if (deleteError) {
+      throw new Error(deleteError?.message || "Failed to remove bookmark");
+    }
+    return { bookmarked: false, message: "Bookmark removed" };
+  } else {
+    // Bookmark doesn't exist, add it
+    const { data, error } = await supabase
+      .from("companion_bookmark")
+      .insert({
+        companion_id: CompanionId,
+        user_id: userId,
+      })
+      .select();
+
+    if (error || !data) {
+      throw new Error(error?.message || "Failed to add bookmark");
+    }
+    return { bookmarked: true, message: "Bookmark added", data };
+  }
+};
+
+export const CheckBookmarkStatus = async (CompanionId: string) => {
+  const { userId } = await auth();
+  const supabase = await CreateSupaBaseClient();
+
+  const { data: existingBookmark, error } = await supabase
+    .from("companion_bookmark")
+    .select()
+    .eq("companion_id", CompanionId)
+    .eq("user_id", userId)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    throw new Error(error?.message || "Failed to check bookmark status");
+  }
+
+  return !!existingBookmark;
+};

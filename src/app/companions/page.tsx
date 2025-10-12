@@ -11,10 +11,10 @@ const Companions_lib = async ({ searchParams }: SearchParams) => {
   const subject = filters.subject ? filters.subject : '';
   const topic = filters.topic ? filters.topic : '';
 
-  console.log('PARAMS: ', filters);
+  // console.log('PARAMS: ', filters);
 
   const Companions = await GetAllCompanions({ subject, topic })
-  console.log(Companions)
+  // console.log(Companions)
   return (
     <main>
       <section className='flex justify-between gap-4 max-sm:flex-col'>

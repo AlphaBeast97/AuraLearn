@@ -52,7 +52,7 @@ const CompanionForm = () => {
         if (Companion) {
             redirect(`/companions/${Companion.id}`);
         } else {
-            console.log("Error creating companion");
+            // console.log("Error creating companion");
             redirect(`/`);
         }
     }

@@ -57,7 +57,7 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
 
             // Start session timer to automatically end call after duration
             sessionTimerRef.current = setTimeout(() => {
-                console.log(`⏰ Session duration of ${duration} minutes reached, ending call...`);
+                // console.log(`⏰ Session duration of ${duration} minutes reached, ending call...`);
                 vapi.stop();
                 setCallStatus(CallStatus.FINISHED);
             }, duration * 60 * 1000); // Convert minutes to milliseconds
@@ -102,7 +102,7 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
                     endKeywords.some(keyword => transcript.includes(keyword));
 
                 if (shouldEndSession) {
-                    console.log('🔚 AI signaled session end, closing call...');
+                    // console.log('🔚 AI signaled session end, closing call...');
 
                     // Clear the duration timer since AI is ending naturally
                     if (sessionTimerRef.current) {

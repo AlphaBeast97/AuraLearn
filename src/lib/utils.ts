@@ -21,8 +21,8 @@ export const configureAssistant = (
     duration?: number;
   }
 ) => {
-  console.log("🔧 Configuring assistant with voice:", voice, "style:", style);
-  console.log("📚 Companion data:", companionData);
+  // console.log("🔧 Configuring assistant with voice:", voice, "style:", style);
+  // console.log("📚 Companion data:", companionData);
 
   // Use a simple, working voice configuration
   let voiceId = "sarah"; // Default ElevenLabs voice
@@ -37,7 +37,7 @@ export const configureAssistant = (
     console.warn("Voice configuration error, using default:", error);
   }
 
-  console.log("🎤 Using voice ID:", voiceId);
+  // console.log("🎤 Using voice ID:", voiceId);
 
   // Personalized first message based on companion data
   const firstMessage = companionData?.topic
@@ -132,6 +132,6 @@ export const configureAssistant = (
     },
   };
 
-  console.log("✅ Assistant configured:", vapiAssistant);
+  // console.log("✅ Assistant configured:", vapiAssistant);
   return vapiAssistant;
 };

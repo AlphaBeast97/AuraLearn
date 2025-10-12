@@ -6,6 +6,9 @@ import { getSubjectColor } from '@/lib/utils';
 import Link from 'next/link';
 import React from 'react'
 
+// Force dynamic rendering due to database queries
+export const dynamic = 'force-dynamic';
+
 const Companions_lib = async ({ searchParams }: SearchParams) => {
 
   const filters = await searchParams;

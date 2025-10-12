@@ -6,6 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+// Force dynamic rendering due to authentication and database queries
+export const dynamic = 'force-dynamic';
+
 interface CompanionSessionPageParams {
   params: Promise<{ id: string }>;
 }

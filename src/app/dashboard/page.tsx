@@ -4,6 +4,9 @@ import CompanionsList from "@/components/CompanionsList";
 import { GetAllCompanions, GetRecentSessions } from "@/lib/actions/companions.actions";
 import { getSubjectColor } from "@/lib/utils";
 
+// Force dynamic rendering due to authentication requirements
+export const dynamic = 'force-dynamic';
+
 const DashboardPage = async () => {
 
     const companions = await GetAllCompanions({ limit: 3 });

@@ -2,6 +2,9 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
+// Force dynamic rendering due to authentication checks
+export const dynamic = 'force-dynamic';
+
 const LandingPage = async () => {
   const { userId } = await auth();
 

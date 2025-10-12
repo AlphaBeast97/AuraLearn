@@ -5,6 +5,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
+// Force dynamic rendering due to authentication requirements
+export const dynamic = 'force-dynamic';
+
 const Profile = async () => {
 
   const user = await currentUser()

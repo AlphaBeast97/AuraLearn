@@ -3,6 +3,9 @@ import { newCompanionsPermissions } from '@/lib/actions/companions.actions'
 import Image from 'next/image'
 import Link from 'next/link'
 
+// Force dynamic rendering due to authentication checks
+export const dynamic = 'force-dynamic';
+
 const New_Companion = async () => {
 
   const canCreateCompanion = await newCompanionsPermissions()

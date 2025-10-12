@@ -9,16 +9,30 @@ const NavBar = () => {
 
     return (
         <nav className='navbar'>
-            <Link href={'/'}>
-                <div className='flex items-center gap-2.5 cursor-pointer'>
-                    <Image
-                        src='/images/logo.jpg'
-                        alt='logo'
-                        width={46}
-                        height={44}
-                    ></Image>
-                </div>
-            </Link>
+            <SignedIn>
+                <Link href={'/dashboard'}>
+                    <div className='flex items-center gap-2.5 cursor-pointer'>
+                        <Image
+                            src='/images/logo.jpg'
+                            alt='logo'
+                            width={46}
+                            height={44}
+                        ></Image>
+                    </div>
+                </Link>
+            </SignedIn>
+            <SignedOut>
+                <Link href={'/'}>
+                    <div className='flex items-center gap-2.5 cursor-pointer'>
+                        <Image
+                            src='/images/logo.jpg'
+                            alt='logo'
+                            width={46}
+                            height={44}
+                        ></Image>
+                    </div>
+                </Link>
+            </SignedOut>
             <div className='flex items-center gap-8'>
                 <NavItems />
                 <SignedIn>

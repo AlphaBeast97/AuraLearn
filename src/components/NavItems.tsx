@@ -9,7 +9,7 @@ const navLinks = [
         href: '/'
     },
     {
-        label: 'Companion',
+        label: 'My Companion',
         href: '/companions'
     },
     {

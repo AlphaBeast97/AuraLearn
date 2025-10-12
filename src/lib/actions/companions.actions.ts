@@ -74,3 +74,47 @@ export const GetCompanionById = async (id: string) => {
 
   return companion;
 };
+
+export const AddToSessionHistory = async (CompanionId: string) => {
+  const { userId } = await auth();
+  const supabase = await CreateSupaBaseClient();
+
+  const { data, error } = await supabase
+    .from("session_history")
+    .insert({
+      companion_id: CompanionId,
+      user_id: userId,
+    })
+    .select();
+  if (error || !data) {
+    throw new Error(error?.message || "Failed to add to session history");
+  }
+  return data;
+};
+
+export const GetRecentSessions = async (limit = 10) => {
+  const supabase = await CreateSupaBaseClient();
+  const { data, error } = await supabase
+    .from("session_history")
+    .select(`companions:companion_id (*)`)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error || !data) {
+    throw new Error(error?.message || "Failed to fetch recent sessions");
+  }
+  return data.map(({ companions }) => companions);
+};
+
+export const GetUserSessions = async (userId: string, limit = 10) => {
+  const supabase = await CreateSupaBaseClient();
+  const { data, error } = await supabase
+    .from("session_history")
+    .select(`companions:companion_id (*)`)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error || !data) {
+    throw new Error(error?.message || "Failed to fetch recent sessions");
+  }
+  return data.map(({ companions }) => companions);
+};

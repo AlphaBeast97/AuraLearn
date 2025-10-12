@@ -5,6 +5,7 @@ import Lottie, { LottieRefCurrentProps } from 'lottie-react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import soundwaves from '@/constants/soundwaves.json'
+import { AddToSessionHistory } from '@/lib/actions/companions.actions'
 
 enum CallStatus {
     INACTIVE = 'INACTIVE',
@@ -68,6 +69,8 @@ const CompanionComponent = ({ companionId, subject, name, topic, style, voice, u
                 clearTimeout(sessionTimerRef.current);
                 sessionTimerRef.current = null;
             }
+
+            AddToSessionHistory(companionId)
         };
         const onMessage = (message: unknown) => {
             // console.log('📝 Vapi Message:', message);

@@ -17,13 +17,12 @@ AuraLearn is a cutting-edge educational platform that leverages AI technology to
 - **🎙️ Voice Conversations** - Natural voice interactions powered by VAPI AI technology
 - **📚 Multi-Subject Support** - Comprehensive coverage across Mathematics, Science, Languages, History, Coding, and Economics
 - **👤 Personalized Experience** - Tailored learning paths based on individual preferences and progress
-- **📊 Smart Analytics** - Track learning progress with detailed insights and recommendations
 - **🔒 Secure Authentication** - User management powered by Clerk
 - **📱 Responsive Design** - Beautiful, mobile-first UI built with Tailwind CSS
 
 ## 🚀 Live Demo
 
-Visit [AuraLearn](https://your-live-demo-url.com) to experience the platform in action.
+Visit [AuraLearn](https://aura-learn-six.vercel.app/) to experience the platform in action.
 
 ## 🛠️ Tech Stack
 
@@ -228,16 +227,6 @@ The app can also be deployed on:
 - **Railway** - Full-stack deployment
 - **Digital Ocean** - App Platform
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -251,19 +240,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **VAPI** - For AI voice technology
 - **Shadcn** - For the beautiful component library
 
-## 📞 Support
-
-For support, email support@auraelearn.com or join our Discord community.
-
 ## 🔗 Links
 
-- [Live Demo](https://your-live-demo-url.com)
-- [Documentation](https://docs.auralearn.com)
-- [Discord Community](https://discord.gg/auralearn)
-- [Twitter](https://twitter.com/auralearn)
+- [Live Demo](https://aura-learn-six.vercel.app/
 
 ---
 
 <p align="center">
-  <strong>Built with ❤️ by the AuraLearn Team</strong>
+  <strong>Built with ❤️ by the AlphaBeast97</strong>
 </p>

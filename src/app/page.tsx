@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Image from "next/image";
 
 const LandingPage = async () => {
   const { userId } = await auth();
@@ -32,11 +31,11 @@ const LandingPage = async () => {
           Transform learning with <span className="font-semibold text-primary">personalized AI companions</span> that adapt to your style and pace through natural voice conversations
         </p>
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-          <Link href="/sign-up" className="btn-primary text-lg px-10 py-5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 relative overflow-hidden group">
+          <Link href="/sign-up" className="btn-primary text-lg px-10 py-5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 relative overflow-hidden group cursor-pointer active:scale-100 focus:outline-none focus:ring-4 focus:ring-primary/30">
             <span className="relative z-10">Get Started Free</span>
             <div className="absolute inset-0 bg-gradient-to-r from-primary to-cta opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </Link>
-          <Link href="/sign-in" className="btn-signin text-lg px-10 py-5 hover:bg-muted/50 transition-all duration-300 transform hover:scale-105">
+          <Link href="/sign-in" className="btn-signin text-lg px-10 py-5 hover:bg-muted/50 transition-all duration-300 transform hover:scale-105 cursor-pointer active:scale-100 focus:outline-none focus:ring-4 focus:ring-border/50">
             Sign In →
           </Link>
         </div>
@@ -169,7 +168,7 @@ const LandingPage = async () => {
               Join thousands of learners who are already experiencing the future of education with personalized AI companions. Start your journey today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/sign-up" className="btn-primary text-lg px-10 py-5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <Link href="/sign-up" className="btn-primary text-lg px-10 py-5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer active:scale-100 focus:outline-none focus:ring-4 focus:ring-primary/30">
                 Start Learning Today
               </Link>
               <div className="text-white/80 text-sm">

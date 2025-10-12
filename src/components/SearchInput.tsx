@@ -11,7 +11,7 @@ const SearchInput = () => {
     const searchParams = useSearchParams();
     const query = searchParams.get('topic') || '';
 
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState(query)
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -39,7 +39,7 @@ const SearchInput = () => {
 
 
     return (
-        <div className='relative border border-black rounded-lg items-center flex gap-2 px-2 py-1 h-fit'>
+        <div className='relative border border-black rounded-4xl items-center flex gap-2 px-2 py-1 h-fit'>
             <Image
                 src='/icons/search.svg'
                 alt='search'

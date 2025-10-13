@@ -92,7 +92,7 @@ export const AddToSessionHistory = async (CompanionId: string) => {
   return data;
 };
 
-export const GetRecentSessions = async (limit = 10) => {
+export const GetRecentSessions = async ({ limit = 10 }) => {
   const supabase = await CreateSupaBaseClient();
   const { data, error } = await supabase
     .from("session_history")

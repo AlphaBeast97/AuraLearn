@@ -10,7 +10,7 @@ const authenticatedNavLinks = [
         href: '/dashboard'
     },
     {
-        label: 'My Companion',
+        label: 'Companions',
         href: '/companions'
     },
     {

@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 const DashboardPage = async () => {
 
     const companions = await GetAllCompanions({ limit: 3 });
-    const recentSessionsCompanion = await GetRecentSessions();
+    const recentSessionsCompanion = await GetRecentSessions({ limit: 5 });
 
     return (
         <main className="min-h-screen bg-background relative">

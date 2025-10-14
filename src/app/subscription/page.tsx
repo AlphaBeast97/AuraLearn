@@ -19,7 +19,7 @@ const Subscription = async () => {
       <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-r from-blue-200/5 to-purple-200/5 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-40 left-10 w-96 h-96 bg-gradient-to-r from-purple-200/5 to-pink-200/5 rounded-full blur-3xl animate-pulse"></div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
+      <div className="relative z-0 mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
         {/* Back Navigation */}
         <div className="mb-6">
           <Link

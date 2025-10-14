@@ -251,3 +251,19 @@ body {
   transform: translateY(-2px) !important;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2) !important;
 }
+
+/* Clerk Modal Z-Index Fix */
+.cl-modalContent,
+.cl-modal,
+.cl-modalBackdrop,
+[data-clerk-modal] {
+  z-index: 9999 !important;
+}
+
+/* Ensure Clerk overlays appear above page content */
+.cl-organizationSwitcher__popoverCard,
+.cl-userButton__popoverCard,
+.cl-organizationProfile,
+.cl-userProfile {
+  z-index: 9999 !important;
+}

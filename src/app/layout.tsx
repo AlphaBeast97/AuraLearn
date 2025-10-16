@@ -56,6 +56,9 @@ export const metadata = {
   alternates: {
     canonical: "https://aura-learn-six.vercel.app",
   },
+  verification: {
+    google: 'n1SZPGUUf7D-wS9zgMoqhz3msaeZYim_JzjgzoPLgXI',
+  },
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",

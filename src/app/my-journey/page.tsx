@@ -4,6 +4,12 @@ import { currentUser } from "@clerk/nextjs/server"
 import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 // Force dynamic rendering due to authentication requirements
 export const dynamic = 'force-dynamic';
@@ -119,89 +125,99 @@ const Profile = async () => {
         {/* Content Sections */}
         {sessionHistory.length > 0 || companions.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:gap-8">
-            {/* Recent Sessions */}
-            {sessionHistory.length > 0 ? (
-              <section className="bg-white rounded-4xl shadow-lg border border-border/50 p-6">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 mb-2">
+            <Accordion type="multiple" defaultValue={["sessions", "companions"]} className="w-full">
+              {/* Recent Sessions */}
+              <AccordionItem value="sessions" className="bg-white rounded-4xl shadow-lg border border-border/50 mb-6 overflow-hidden">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3">
                     <div className="w-7 h-7 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <h2 className="text-xl font-bold text-foreground">
-                      Recent Sessions
-                    </h2>
-                    <span className="bg-green-100 text-green-800 text-sm font-semibold px-2 py-0.5 rounded-full">
-                      {sessionHistory.length}
-                    </span>
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground">
+                          Recent Sessions
+                        </h2>
+                        <span className="bg-green-100 text-green-800 text-sm font-semibold px-2 py-0.5 rounded-full">
+                          {sessionHistory.length}
+                        </span>
+                      </div>
+                      <p className="text-muted-foreground text-sm mt-1">Your latest learning sessions</p>
+                    </div>
                   </div>
-                  <p className="text-muted-foreground text-sm">Your latest learning sessions</p>
-                </div>
-                <CompanionsList
-                  title=""
-                  companions={sessionHistory}
-                  classNames="w-full"
-                />
-              </section>
-            ) : (
-              <section className="bg-white rounded-4xl shadow-lg border border-border/50 p-6">
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-muted/30 rounded-4xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">No Recent Sessions</h3>
-                  <p className="text-sm text-muted-foreground max-w-sm mx-auto">Start a session with one of your companions to see your recent activity here</p>
-                </div>
-              </section>
-            )}
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6">
+                  {sessionHistory.length > 0 ? (
+                    <CompanionsList
+                      title=""
+                      companions={sessionHistory}
+                      classNames="w-full"
+                    />
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-muted/30 rounded-4xl flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground mb-2">No Recent Sessions</h3>
+                      <p className="text-sm text-muted-foreground max-w-sm mx-auto">Start a session with one of your companions to see your recent activity here</p>
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
 
-            {/* My Companions */}
-            {companions.length > 0 ? (
-              <section className="bg-white rounded-4xl shadow-lg border border-border/50 p-6">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 mb-2">
+              {/* My Companions */}
+              <AccordionItem value="companions" className="bg-white rounded-4xl shadow-lg border border-border/50 overflow-hidden">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3">
                     <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </div>
-                    <h2 className="text-xl font-bold text-foreground">
-                      My Companions
-                    </h2>
-                    <span className="bg-purple-100 text-purple-800 text-sm font-semibold px-2 py-0.5 rounded-full">
-                      {companions.length}
-                    </span>
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground">
+                          My Companions
+                        </h2>
+                        <span className="bg-purple-100 text-purple-800 text-sm font-semibold px-2 py-0.5 rounded-full">
+                          {companions.length}
+                        </span>
+                      </div>
+                      <p className="text-muted-foreground text-sm mt-1">AI tutors you&apos;ve created</p>
+                    </div>
                   </div>
-                  <p className="text-muted-foreground text-sm">AI tutors you&apos;ve created</p>
-                </div>
-                <CompanionsList
-                  title=""
-                  companions={companions}
-                  classNames="w-full"
-                />
-              </section>
-            ) : (
-              <section className="bg-white rounded-4xl shadow-lg border border-border/50 p-6">
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-muted/30 rounded-4xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">No Companions Yet</h3>
-                  <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">Create your first AI learning companion to get started</p>
-                  <Link
-                    href="/companions/new"
-                    className="inline-block bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-3xl transition-all duration-300 shadow-md hover:shadow-lg"
-                  >
-                    Create Companion
-                  </Link>
-                </div>
-              </section>
-            )}
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6">
+                  {companions.length > 0 ? (
+                    <CompanionsList
+                      title=""
+                      companions={companions}
+                      classNames="w-full"
+                    />
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-muted/30 rounded-4xl flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground mb-2">No Companions Yet</h3>
+                      <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">Create your first AI learning companion to get started</p>
+                      <Link
+                        href="/companions/new"
+                        className="inline-block bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-3xl transition-all duration-300 shadow-md hover:shadow-lg"
+                      >
+                        Create Companion
+                      </Link>
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         ) : (
           /* Empty State */
